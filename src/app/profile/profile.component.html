@@ -1,0 +1,143 @@
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12 col-sm-12">
+      <div class="card hovercard">
+        <div class="cardheader">
+        </div>
+        <div class="navigation-button-container">
+          <div class="wrap">
+            <div class="search">
+              <input type="text" class="searchTerm" placeholder="What are you looking for?" (keydown.enter)="search()" [(ngModel)]="searchTxt">
+              <button type="submit" class="searchButton" (click)="search()" data-toggle="modal" data-target="#myModal">
+                <i class="fa fa-search"></i>
+              </button>
+            </div>
+          </div>
+          <button class="navigation-button btn btn-success" (click)="navigateToTab('FEED')">Feed</button>
+          <button class="navigation-button btn btn-success" (click)="navigateToTab('FRIENDS')">Friends</button>
+          <button class="navigation-button btn btn-success" (click)="navigateToTab('CHAT')">Chat</button>
+          <button class="navigation-button btn btn-success edit-profile-btn"> <i class="fa fa-edit"></i></button>
+        </div>
+        <div class="info-container">
+          <div class="avatar">
+            <img style="object-fit: contain; background: white;" alt="" [src]="user.profileImage">
+          <button class="change-profilepic-btn"><i class="fa fa-edit "></i></button>
+            <input type="file" id="editprofileImage" (change)="changeProfileImage($event)">
+          </div>
+          <div class="info">
+            <div class="title">
+              <a target="_blank" href="https://tharuka.xyz/">{{user.name}}</a>
+            </div>
+            <div class="desc">{{user.email}}</div>
+            <div class="desc">{{user.description}}</div>
+            <div class="desc">{{user.phone}}</div>
+            <div class="desc" *ngIf="isChanged" (click)="updateUserData()"><button>update</button></div>
+          </div>
+        </div>
+        <div class="add-post">
+          <textarea class="add-post-text" placeholder="What do you feel?" [(ngModel)]="post.content"></textarea>
+          <input style="left: 436px;" type="file" class="file upload-post-image attache-image" (change)="onUploadFile($event)">
+          <button class="btn btn-success upload-post-image" (click)="savePost()"> <i class="fa fa-send "></i> </button>
+        </div>
+        <div class="bottom">
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="activeTab === 'FEED'">
+    <div *ngFor="let post_ of posts"  class="post-card">
+      <div>
+        <img class="post-card-img" src="https://ipfs.io/ipfs/{{post_.file}}" alt="Avatar">
+      </div>
+      <div class="post-card-container">
+        <h4><b>{{post_.author}}</b></h4>
+        <!--<h4><b>Jane Doe</b></h4>-->
+        <p>{{post_.date.toLocaleDateString()}} {{post_.date.toLocaleTimeString()}} </p>
+        <p>{{post_.content}}</p>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="activeTab === 'FRIENDS'">
+    <div *ngFor="let friend of  friends"  class="post-card">
+      <div>
+        <img *ngIf="friend.profileImageHash === 'NA'" class="post-card-img" width="50" height="50" [src]="user.profileImage" alt="Avatar">
+        <img *ngIf="friend.profileImageHash !== 'NA'" class="post-card-img" width="50" height="50" src="https://ipfs.io/ipfs/{{friend.profileImageHash}}" alt="Avatar">
+      </div>
+      <div class="post-card-container">
+        <h4><b>{{friend.name}}</b></h4>
+        <!--<h4><b>Jane Doe</b></h4>-->
+        <p>{{friend.age}} </p>
+        <p>{{friend.email}}</p>
+        <p>{{friend.description}}</p>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="container">
+    <div class="modal fade" id="myModal" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" (click)="closeProfileViewModel()" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Search Results</h4>
+          </div>
+          <div class="modal-body">
+            <div *ngFor="let result of searchResult; let i = index">
+              <div class="row my-search-results">
+              <div class="col-md-2"> <img  class="search-result-profile-image" src="{{result.profileImageHash}}"></div>
+              <div class="col-md-7" (click)="selectUserProfile(i)"><p class="search-result-profile-name">{{result.name}}</p></div>
+              <div class="col-md-3" >
+                <button class="btn btn-success send-request-btn" *ngIf="!result.isFriend" (click)="addFriends(result.address)">Add Friend</button>
+                <button class="btn btn-danger send-request-btn" *ngIf="result.isFriend" (click)="unfriend(result.address)">Unfriend</button>
+              </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: center;" *ngIf="isProfile">
+            <img class="selected-profile-image" src="{{selectedUser.profileImageHash}}">
+            <p style="margin-top: 20px; font-size: x-large;">{{selectedUser.name}}</p>
+            <p>{{selectedUser.age}}</p>
+            <p>{{selectedUser.email}}</p>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" (click)="closeProfileViewModel()" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
